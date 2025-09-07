@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/output.css">
+  <title><%= title %></title>
+</head>
+<body class="bg-gray-900">
+  <header class="bg-gray-1000 text-white p-4 px-8 shadow-md border-b-2 border-b-gray-800">
+    <div class="container flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Inventory Application</h1>
+      <nav class="flex space-x-8">
+        <a href="/" class="hover:underline">Home</a>
+        <a href="/genres" class="hover:underline">Genres</a>
+        <a href="/developers" class="hover:underline">Developers</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto mb-8 p-4 px-8">
+    <div class="flex justify-between mb-6">
+      <h1 class="text-3xl font-bold text-white">Games Inventory</h1>
+      <a href="/games/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add New Game</a>
+    </div>
+
+    <% if (games && games.length> 0) { %>
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        <% games.forEach(game=> { %>
+          <div class="bg-gray-800 text-white rounded-lg shadow-md overflow-hidden">
+            <% if (game.image_url) { %>
+              <img src="<%= game.image_url %>" alt="<%= game.title %>" class="w-full h-auto object-cover">
+              <% } %>
+                <div class="p-4">
+                  <h2 class="text-xl font-semibold mb-3">
+                    <%= game.title %>
+                  </h2>
+                  <p class="text-gray-400">Developer: <%= game.developer_name || (game.developers &&
+                      game.developers.length> 0 ? game.developers.map(dev => dev.name).join(', ') : 'Unknown') %></p>
+                  <p class="text-gray-400 mb-2">Genre: <%= game.genre_name || (game.genres && game.genres.length> 0 ?
+                      game.genres.map(gen => gen.name).join(', ') : 'Unknown') %></p>
+                </div>
+          </div>
+          <% }); %>
+      </div>
+      <% } %>
+        </div>
+  </main>
+</body>
+</html>

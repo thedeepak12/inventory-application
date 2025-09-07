@@ -15,7 +15,6 @@ pool.query(sql, (err, res) => {
   } else {
     console.log('Tables created successfully');
   }
-  pool.end();
 });
 
 module.exports = pool;
