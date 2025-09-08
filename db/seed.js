@@ -34,18 +34,42 @@ async function seed() {
     }
     
     const developers = [
-      'Mojang Studios',
-      'Activision',
-      'Game Freak',
-      'Nintendo',
-      'Supercell',
-      'Epic Games',
-      'Rockstar Games',
-      'Electronic Arts',
+      {
+        name: 'Mojang Studios',
+        image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Mojang_Studios_Logo_%282020%2C_slim%29.svg/1024px-Mojang_Studios_Logo_%282020%2C_slim%29.svg.png'
+      },
+      {
+        name: 'Activision',
+        image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Activision.svg/1920px-Activision.svg.png'
+      },
+      {
+        name: 'Game Freak',
+        image_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/a/a7/Game_Freak_logo.svg/1920px-Game_Freak_logo.svg.png'
+      },
+      {
+        name: 'Nintendo',
+        image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Nintendo.svg/1920px-Nintendo.svg.png'
+      },
+      {
+        name: 'Supercell',
+        image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Supercell-logo.svg/1024px-Supercell-logo.svg.png'
+      },
+      {
+        name: 'Epic Games',
+        image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Epic_Games_logo.svg/800px-Epic_Games_logo.svg.png'
+      },
+      {
+        name: 'Rockstar Games',
+        image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Rockstar_Games_Logo.svg/1024px-Rockstar_Games_Logo.svg.png'
+      },
+      {
+        name: 'Electronic Arts',
+        image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Electronic_Arts_Logo_Blue.svg/500px-Electronic_Arts_Logo_Blue.svg.png'
+      },
     ];
     
     for (const developer of developers) {
-      await client.query('INSERT INTO developers (name) VALUES ($1)', [developer]);
+      await client.query('INSERT INTO developers (name, image_url) VALUES ($1, $2)', [developer.name, developer.image_url]);
     }
     
     const games = [
