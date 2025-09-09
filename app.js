@@ -3,6 +3,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const pool = require('./config/database');
 const Game = require('./models/game');
+const developerController = require('./controllers/developerController');
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -26,6 +27,9 @@ app.get('/', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+app.get('/developers', developerController.developer_list);
+app.get('/developers/:id', developerController.developer_detail);
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
