@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/output.css">
+  <title><%= genre.name %> | Genre Details</title>
+</head>
+<body class="bg-gray-900">
+  <header class="bg-gray-1000 text-white p-4 px-8 shadow-md border-b-2 border-b-gray-800">
+    <div class="container flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Inventory Application</h1>
+      <nav class="flex space-x-8">
+        <a href="/" class="hover:underline">Home</a>
+        <a href="/genres" class="hover:underline">Genres</a>
+        <a href="/developers" class="hover:underline">Developers</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto mb-8 p-4 px-8">
+    <div class="mb-6">
+      <a href="/genres" class="text-blue-400 hover:underline">&larr; Back to Genres</a>
+    </div>
+    
+    <div class="bg-gray-800 text-white rounded-lg shadow-md overflow-hidden p-6">
+      <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center">
+          <div>
+            <h1 class="text-3xl font-bold"><%= genre.name %></h1>
+          </div>
+        </div>
+        <div class="flex space-x-4">
+          <a href="/genres/<%= genre.id %>/edit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Edit</a>
+          <a href="/genres/<%= genre.id %>/delete" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Delete</a>
+        </div>
+      </div>
+      
+      <div class="mt-8">
+        <h2 class="text-2xl font-semibold mb-4">Games in this Genre</h2>
+        
+        <% if (genre.games && genre.games.length > 0) { %>
+          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <% genre.games.forEach(game => { %>
+              <div class="bg-gray-700 rounded-lg shadow-md overflow-hidden">
+                <% if (game.image_url) { %>
+                  <img src="<%= game.image_url %>" alt="<%= game.title %>" class="w-full h-auto object-cover">
+                <% } %>
+                <div class="p-4">
+                  <h3 class="text-lg font-semibold"><%= game.title %></h3>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="bg-gray-700 p-4 rounded-lg">
+            <p>No games found in this genre.</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
