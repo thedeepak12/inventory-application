@@ -3,6 +3,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const pool = require('./config/database');
 const Game = require('./models/game');
+const gameController = require('./controllers/gameController');
 const developerController = require('./controllers/developerController');
 const genreController = require('./controllers/genreController');
 
@@ -19,15 +20,10 @@ pool.connect()
 
 require('dotenv').config();
 
-app.get('/', async (req, res) => {
-  try {
-    const games = await Game.getAll();    
-    res.render('games/index', { title: 'Inventory Application', games });
-  } catch (err) {
-    console.error('Error in homepage route:', err);
-    res.status(500).send('Server Error');
-  }
-});
+app.get('/', gameController.game_list);
+
+app.get('/games', gameController.game_list);
+app.get('/games/:id', gameController.game_detail);
 
 app.get('/developers', developerController.developer_list);
 app.get('/developers/:id', developerController.developer_detail);

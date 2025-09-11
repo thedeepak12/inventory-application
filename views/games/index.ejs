@@ -27,7 +27,7 @@
     <% if (games && games.length> 0) { %>
       <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
         <% games.forEach(game=> { %>
-          <div class="bg-gray-800 text-white rounded-lg shadow-md overflow-hidden">
+          <a href="/games/<%= game.id %>" class="block bg-gray-800 text-white rounded-lg shadow-md overflow-hidden hover:bg-gray-700 transition-colors duration-200 cursor-pointer">
             <% if (game.image_url) { %>
               <img src="<%= game.image_url %>" alt="<%= game.title %>" class="w-full h-auto object-cover">
               <% } %>
@@ -40,7 +40,7 @@
                   <p class="text-gray-400 mb-2">Genre: <%= game.genre_name || (game.genres && game.genres.length> 0 ?
                       game.genres.map(gen => gen.name).join(', ') : 'Unknown') %></p>
                 </div>
-          </div>
+          </a>
           <% }); %>
       </div>
       <% } %>

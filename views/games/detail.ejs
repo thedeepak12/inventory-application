@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/output.css">
+  <title><%= game.title %> | Game Details</title>
+</head>
+<body class="bg-gray-900">
+  <header class="bg-gray-1000 text-white p-4 px-8 shadow-md border-b-2 border-b-gray-800">
+    <div class="container flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Inventory Application</h1>
+      <nav class="flex space-x-8">
+        <a href="/" class="hover:underline">Home</a>
+        <a href="/genres" class="hover:underline">Genres</a>
+        <a href="/developers" class="hover:underline">Developers</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto mb-8 p-4 px-8">
+    <div class="mb-6">
+      <a href="/games" class="text-blue-400 hover:underline">&larr; Back to Games</a>
+    </div>
+    
+    <div class="bg-gray-800 text-white rounded-lg shadow-md overflow-hidden p-6">
+      <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center">
+          <% if (game.image_url) { %>
+            <img src="<%= game.image_url %>" alt="<%= game.title %>" class="w-48 h-48 object-contain mr-6">
+          <% } %>
+          <div>
+            <h1 class="text-3xl font-bold"><%= game.title %></h1>
+          </div>
+        </div>
+        <div class="flex space-x-4">
+          <a href="/games/<%= game.id %>/edit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Edit</a>
+          <a href="/games/<%= game.id %>/delete" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Delete</a>
+        </div>
+      </div>
+      
+      <div class="mt-8">
+        <h2 class="text-2xl font-semibold mb-4">Developers</h2>
+        <% if (game.developers && game.developers.length > 0) { %>
+          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+            <% game.developers.forEach(developer => { %>
+              <div class="bg-gray-700 rounded-lg shadow-md overflow-hidden p-4">
+                <h3 class="text-lg font-semibold">
+                  <a href="/developers/<%= developer.id %>" class="hover:text-blue-400">
+                    <%= developer.name %>
+                  </a>
+                </h3>
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="bg-gray-700 p-4 rounded-lg mb-8">
+            <p>No developers found for this game.</p>
+          </div>
+        <% } %>
+
+        <h2 class="text-2xl font-semibold mb-4">Genres</h2>
+        <% if (game.genres && game.genres.length > 0) { %>
+          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <% game.genres.forEach(genre => { %>
+              <div class="bg-gray-700 rounded-lg shadow-md overflow-hidden p-4">
+                <h3 class="text-lg font-semibold">
+                  <a href="/genres/<%= genre.id %>" class="hover:text-blue-400">
+                    <%= genre.name %>
+                  </a>
+                </h3>
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="bg-gray-700 p-4 rounded-lg">
+            <p>No genres found for this game.</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
