@@ -1,6 +1,23 @@
 const pool = require('../config/database');
 
 const Game = {
+  create: async (gameData) => {
+    const { title, image_url, genre_id, developer_id } = gameData;
+    const query = `
+      INSERT INTO games (title, image_url, genre_id, developer_id)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *
+    `;
+    const values = [title, image_url, genre_id, developer_id];
+    
+    try {
+      const result = await pool.query(query, values);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error creating game:', error);
+      throw error;
+    }
+  },
   getAll: async () => {
     try {
       const gamesRes = await pool.query('SELECT * FROM games');

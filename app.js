@@ -23,6 +23,8 @@ require('dotenv').config();
 app.get('/', gameController.game_list);
 
 app.get('/games', gameController.game_list);
+app.get('/games/new', gameController.game_create_get);
+app.post('/games', gameController.game_create_post);
 app.get('/games/:id', gameController.game_detail);
 
 app.get('/developers', developerController.developer_list);

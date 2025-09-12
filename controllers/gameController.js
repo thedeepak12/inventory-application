@@ -1,4 +1,18 @@
 const Game = require('../models/game');
+const pool = require('../config/database');
+
+exports.game_create_get = (req, res) => {
+  res.render('games/new');
+};
+
+exports.game_create_post = async (req, res) => {
+  try {    
+    return res.status(403).send('Invalid admin key');
+  } catch (err) {
+    console.error('Error creating game:', err);
+    res.status(500).send('Server Error');
+  }
+};
 
 exports.game_list = async (req, res) => {
   try {
