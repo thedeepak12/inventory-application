@@ -1,6 +1,23 @@
 const pool = require('../config/database');
 
 const Genre = {
+  create: async (genreData) => {
+    const { name } = genreData;
+    const query = `
+      INSERT INTO genres (name)
+      VALUES ($1)
+      RETURNING *
+    `;
+    const values = [name];
+    
+    try {
+      const result = await pool.query(query, values);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error creating genre:', error);
+      throw error;
+    }
+  },
   getAll: async () => {
     try {
       const result = await pool.query('SELECT * FROM genres ORDER BY name');

@@ -1,6 +1,23 @@
 const pool = require('../config/database');
 
 const Developer = {
+  create: async (developerData) => {
+    const { name, image_url } = developerData;
+    const query = `
+      INSERT INTO developers (name, image_url)
+      VALUES ($1, $2)
+      RETURNING *
+    `;
+    const values = [name, image_url];
+    
+    try {
+      const result = await pool.query(query, values);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error creating developer:', error);
+      throw error;
+    }
+  },
   getAll: async () => {
     try {
       const result = await pool.query('SELECT * FROM developers ORDER BY name');

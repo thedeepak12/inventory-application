@@ -24,14 +24,18 @@ app.get('/', gameController.game_list);
 
 app.get('/games', gameController.game_list);
 app.get('/games/new', gameController.game_create_get);
-app.post('/games', gameController.game_create_post);
 app.get('/games/:id', gameController.game_detail);
+app.post('/games', gameController.game_create_post);
 
 app.get('/developers', developerController.developer_list);
+app.get('/developers/new', developerController.developer_create_get);
 app.get('/developers/:id', developerController.developer_detail);
+app.post('/developers', developerController.developer_create_post);
 
 app.get('/genres', genreController.genre_list);
+app.get('/genres/new', genreController.genre_create_get);
 app.get('/genres/:id', genreController.genre_detail);
+app.post('/genres', genreController.genre_create_post);
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
