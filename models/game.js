@@ -2,18 +2,46 @@ const pool = require('../config/database');
 
 const Game = {
   create: async (gameData) => {
-    const { title, image_url, genre_id, developer_id } = gameData;
-    const query = `
-      INSERT INTO games (title, image_url, genre_id, developer_id)
-      VALUES ($1, $2, $3, $4)
-      RETURNING *
-    `;
-    const values = [title, image_url, genre_id, developer_id];
+    const { title, image_url, genre_ids, developer_ids } = gameData;
     
     try {
-      const result = await pool.query(query, values);
-      return result.rows[0];
+      await pool.query('BEGIN');
+      
+      const gameQuery = `
+        INSERT INTO games (title, image_url)
+        VALUES ($1, $2)
+        RETURNING *
+      `;
+      const gameResult = await pool.query(gameQuery, [title, image_url]);
+      const game = gameResult.rows[0];
+      
+      if (genre_ids && genre_ids.length > 0) {
+        for (const genreId of genre_ids) {
+          if (genreId && genreId.trim()) {
+            await pool.query(
+              'INSERT INTO game_genres (game_id, genre_id) VALUES ($1, $2)',
+              [game.id, parseInt(genreId.trim())]
+            );
+          }
+        }
+      }
+      
+      if (developer_ids && developer_ids.length > 0) {
+        for (const developerId of developer_ids) {
+          if (developerId && developerId.trim()) {
+            await pool.query(
+              'INSERT INTO game_developers (game_id, developer_id) VALUES ($1, $2)',
+              [game.id, parseInt(developerId.trim())]
+            );
+          }
+        }
+      }
+      
+      await pool.query('COMMIT');
+      
+      return game;
     } catch (error) {
+      await pool.query('ROLLBACK');
       console.error('Error creating game:', error);
       throw error;
     }
