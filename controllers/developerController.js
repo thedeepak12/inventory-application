@@ -6,11 +6,35 @@ exports.developer_create_get = (req, res) => {
 };
 
 exports.developer_create_post = async (req, res) => {
-  try {    
-    return res.status(403).send('Invalid admin key');
+  try {
+    let developerData;
+    
+    if (req.headers['content-type'] === 'application/json') {
+      developerData = req.body;
+    } else {
+      const { name, image_url, ADMIN_KEY } = req.body;
+      
+      if (ADMIN_KEY !== process.env.ADMIN_KEY) {
+        return res.status(403).send('Invalid admin key');
+      }
+      
+      if (!name) {
+        return res.status(400).send('Name is required');
+      }
+      
+      developerData = { name, image_url };
+    }
+    
+    const newDeveloper = await Developer.create(developerData);
+    
+    if (req.headers['content-type'] === 'application/json') {
+      return res.status(201).json(newDeveloper);
+    } else {
+      res.redirect(`/developers/${newDeveloper.id}`);
+    }
   } catch (err) {
     console.error('Error creating developer:', err);
-    res.status(500).send('Server Error');
+    res.status(500).send(`Server Error: ${err.message}`);
   }
 };
 

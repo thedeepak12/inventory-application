@@ -6,11 +6,35 @@ exports.genre_create_get = (req, res) => {
 };
 
 exports.genre_create_post = async (req, res) => {
-  try {    
-    return res.status(403).send('Invalid admin key');
+  try {
+    let genreData;
+    
+    if (req.headers['content-type'] === 'application/json') {
+      genreData = req.body;
+    } else {
+      const { name, ADMIN_KEY } = req.body;
+      
+      if (ADMIN_KEY !== process.env.ADMIN_KEY) {
+        return res.status(403).send('Invalid admin key');
+      }
+      
+      if (!name) {
+        return res.status(400).send('Name is required');
+      }
+      
+      genreData = { name };
+    }
+    
+    const newGenre = await Genre.create(genreData);
+    
+    if (req.headers['content-type'] === 'application/json') {
+      return res.status(201).json(newGenre);
+    } else {
+      res.redirect(`/genres/${newGenre.id}`);
+    }
   } catch (err) {
     console.error('Error creating genre:', err);
-    res.status(500).send('Server Error');
+    res.status(500).send(`Server Error: ${err.message}`);
   }
 };
 
