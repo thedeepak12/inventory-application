@@ -1,16 +1,66 @@
 const Game = require('../models/game');
 const pool = require('../config/database');
 
-exports.game_create_get = (req, res) => {
-  res.render('games/new');
+exports.game_create_get = async (req, res) => {
+  try {
+    const [genresResult, developersResult] = await Promise.all([
+      pool.query('SELECT id, name FROM genres ORDER BY id'),
+      pool.query('SELECT id, name FROM developers ORDER BY id')
+    ]);
+    
+    res.render('games/new', {
+      genres: genresResult.rows,
+      developers: developersResult.rows
+    });
+  } catch (err) {
+    console.error('Error loading form:', err);
+    res.status(500).send('Server Error');
+  }
 };
 
 exports.game_create_post = async (req, res) => {
-  try {    
-    return res.status(403).send('Invalid admin key');
+  try {
+    console.log('Form data received:', req.body);
+    
+    const { title, image_url, genre_ids, developer_ids, ADMIN_KEY } = req.body;
+    
+    console.log('Extracted data:', { title, image_url, genre_ids, developer_ids });
+    
+    if (ADMIN_KEY !== process.env.ADMIN_KEY) {
+      return res.status(403).send('Invalid admin key');
+    }
+    
+    if (!title) {
+      return res.status(400).send('Title is required');
+    }
+    
+    const genreIdsArray = genre_ids ? genre_ids.split(',').map(id => id.trim()).filter(id => id) : [];
+    const developerIdsArray = developer_ids ? developer_ids.split(',').map(id => id.trim()).filter(id => id) : [];
+    
+    console.log('Parsed IDs:', { genreIdsArray, developerIdsArray });
+    
+    if (genreIdsArray.length === 0 || developerIdsArray.length === 0) {
+      return res.status(400).send('Please provide at least one genre ID and one developer ID');
+    }
+    
+    const gameData = {
+      title,
+      image_url: image_url || null,
+      genre_ids: genreIdsArray,
+      developer_ids: developerIdsArray
+    };
+    
+    console.log('Creating game with data:', gameData);
+    
+    const newGame = await Game.create(gameData);
+    
+    console.log('Game created successfully:', newGame);
+    
+    res.redirect(`/games/${newGame.id}`);
   } catch (err) {
     console.error('Error creating game:', err);
-    res.status(500).send('Server Error');
+    console.error('Error stack:', err.stack);
+    res.status(500).send(`Server Error: ${err.message}`);
   }
 };
 
