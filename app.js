@@ -1,4 +1,5 @@
 const express = require('express');
+const methodOverride = require('method-override');
 const app = express();
 const port = process.env.PORT || 3000;
 const pool = require('./config/database');
@@ -10,6 +11,7 @@ const genreController = require('./controllers/genreController');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
 
 pool.connect()
   .then(client => {
@@ -26,6 +28,8 @@ app.get('/games', gameController.game_list);
 app.get('/games/new', gameController.game_create_get);
 app.get('/games/:id', gameController.game_detail);
 app.post('/games', gameController.game_create_post);
+app.get('/games/:id/edit', gameController.game_update_get);
+app.put('/games/:id', gameController.game_update_post);
 
 app.get('/developers', developerController.developer_list);
 app.get('/developers/new', developerController.developer_create_get);

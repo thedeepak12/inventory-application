@@ -137,6 +137,55 @@ const Game = {
     } catch (err) {
       throw new Error(`Error: ${err.message}`);
     }
+  },
+  
+  update: async (id, gameData) => {
+    const { title, image_url, genre_ids, developer_ids } = gameData;
+    
+    try {
+      await pool.query('BEGIN');
+      
+      const gameQuery = `
+        UPDATE games 
+        SET title = $1, image_url = $2
+        WHERE id = $3
+        RETURNING *
+      `;
+      const gameResult = await pool.query(gameQuery, [title, image_url, id]);
+      const game = gameResult.rows[0];
+      
+      await pool.query('DELETE FROM game_genres WHERE game_id = $1', [id]);
+      await pool.query('DELETE FROM game_developers WHERE game_id = $1', [id]);
+      
+      if (genre_ids && genre_ids.length > 0) {
+        for (const genreId of genre_ids) {
+          if (genreId && genreId.trim()) {
+            await pool.query(
+              'INSERT INTO game_genres (game_id, genre_id) VALUES ($1, $2)',
+              [id, parseInt(genreId.trim())]
+            );
+          }
+        }
+      }
+      
+      if (developer_ids && developer_ids.length > 0) {
+        for (const developerId of developer_ids) {
+          if (developerId && developerId.trim()) {
+            await pool.query(
+              'INSERT INTO game_developers (game_id, developer_id) VALUES ($1, $2)',
+              [id, parseInt(developerId.trim())]
+            );
+          }
+        }
+      }
+      
+      await pool.query('COMMIT');
+      return game;
+    } catch (error) {
+      await pool.query('ROLLBACK');
+      console.error('Error updating game:', error);
+      throw error;
+    }
   }
 };
 
