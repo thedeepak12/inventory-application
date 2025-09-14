@@ -186,6 +186,29 @@ const Game = {
       console.error('Error updating game:', error);
       throw error;
     }
+  },
+  
+  delete: async (id) => {
+    try {
+      await pool.query('BEGIN');
+      
+      await pool.query('DELETE FROM game_genres WHERE game_id = $1', [id]);
+      await pool.query('DELETE FROM game_developers WHERE game_id = $1', [id]);
+      
+      const result = await pool.query('DELETE FROM games WHERE id = $1 RETURNING *', [id]);
+      
+      await pool.query('COMMIT');
+      
+      if (result.rowCount === 0) {
+        return false;
+      }
+      
+      return true;
+    } catch (err) {
+      await pool.query('ROLLBACK');
+      console.error(`Error in Game.delete: ${err.message}`);
+      throw new Error(`Error: ${err.message}`);
+    }
   }
 };
 

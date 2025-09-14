@@ -18,6 +18,8 @@
     </div>
   </header>
 
+  <script src="/js/delete-confirm.js"></script>
+  
   <main class="container mx-auto mb-8 p-4 px-8">
     <div class="mb-6">
       <a href="/genres" class="text-blue-400 hover:underline">&larr; Back to Genres</a>
@@ -32,7 +34,13 @@
         </div>
         <div class="flex space-x-4">
           <a href="/genres/<%= genre.id %>/edit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Edit</a>
-          <a href="/genres/<%= genre.id %>/delete" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Delete</a>
+          <button 
+            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 delete-btn"
+            data-delete-url="/genres/<%= genre.id %>"
+            data-redirect="/genres"
+          >
+            Delete
+          </button>
         </div>
       </div>
       

@@ -34,7 +34,6 @@ exports.game_create_post = async (req, res) => {
       return res.status(400).send('Title is required');
     }
     
-    // Convert to array if it's not already one (handles both string and array inputs)
     const genreIdsArray = genre_ids 
       ? Array.isArray(genre_ids) 
         ? genre_ids.filter(id => id) 
@@ -90,16 +89,44 @@ exports.game_list = async (req, res) => {
 exports.game_detail = async (req, res) => {
   try {
     const game = await Game.getById(req.params.id);
+    
     if (!game) {
       return res.status(404).send('Game not found');
     }
-    res.render('games/detail', { 
-      title: game.title, 
-      game 
+    
+    res.render('games/detail', {
+      title: game.title,
+      game
     });
   } catch (err) {
-    console.error('Error fetching game details:', err);
+    console.error('Error fetching game:', err);
     res.status(500).send('Server Error');
+  }
+};
+
+exports.game_delete = async (req, res) => {
+  try {
+    const { ADMIN_KEY } = req.body;
+    
+    if (ADMIN_KEY !== process.env.ADMIN_KEY) {
+      return res.status(403).json({ success: false, message: 'Invalid admin key' });
+    }
+    
+    const gameId = req.params.id;
+    const deleted = await Game.delete(gameId);
+    
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: 'Game not found' });
+    }
+    
+    return res.json({ success: true, message: 'Game deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting game:', err);
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Error deleting game',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 };
 

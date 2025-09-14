@@ -1,16 +1,31 @@
 const pool = require('../config/database');
 
 const Developer = {
-  create: async (developerData) => {
-    const { name, image_url } = developerData;
-    const query = `
-      INSERT INTO developers (name, image_url)
-      VALUES ($1, $2)
-      RETURNING *
-    `;
-    const values = [name, image_url];
-    
+  create: async (name, image_url) => {
     try {
+      let devName, devImageUrl;
+      
+      if (typeof name === 'object' && name !== null) {
+        devName = name.name;
+        devImageUrl = name.image_url || null;
+      } else {
+        devName = name;
+        devImageUrl = image_url || null;
+      }
+      
+      const trimmedName = String(devName || '').trim();
+      
+      if (!trimmedName) {
+        throw new Error('Developer name cannot be empty');
+      }
+      
+      const query = `
+        INSERT INTO developers (name, image_url)
+        VALUES ($1, $2)
+        RETURNING *
+      `;
+      const values = [trimmedName, devImageUrl];
+      
       const result = await pool.query(query, values);
       return result.rows[0];
     } catch (error) {
@@ -54,19 +69,6 @@ const Developer = {
     }
   },
 
-  create: async (name) => {
-    try {
-      const result = await pool.query(
-        'INSERT INTO developers (name) VALUES ($1) RETURNING *',
-        [name]
-      );
-      return result.rows[0];
-    } catch (err) {
-      console.error(`Error in Developer.create: ${err.message}`);
-      throw new Error(`Error: ${err.message}`);
-    }
-  },
-
   update: async (id, name) => {
     try {
       const result = await pool.query(
@@ -87,15 +89,23 @@ const Developer = {
 
   delete: async (id) => {
     try {
+      await pool.query('BEGIN');
+      
       const checkResult = await pool.query('SELECT * FROM developers WHERE id = $1', [id]);
       
       if (checkResult.rows.length === 0) {
+        await pool.query('COMMIT');
         return false;
       }
       
+      await pool.query('DELETE FROM game_developers WHERE developer_id = $1', [id]);
+      
       await pool.query('DELETE FROM developers WHERE id = $1', [id]);
+      
+      await pool.query('COMMIT');
       return true;
     } catch (err) {
+      await pool.query('ROLLBACK');
       console.error(`Error in Developer.delete: ${err.message}`);
       throw new Error(`Error: ${err.message}`);
     }

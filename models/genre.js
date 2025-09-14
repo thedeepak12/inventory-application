@@ -56,9 +56,16 @@ const Genre = {
 
   create: async (name) => {
     try {
+      const genreName = typeof name === 'object' ? name.name : name;
+      const trimmedName = genreName.trim();
+      
+      if (!trimmedName) {
+        throw new Error('Genre name cannot be empty');
+      }
+      
       const result = await pool.query(
         'INSERT INTO genres (name) VALUES ($1) RETURNING *',
-        [name]
+        [trimmedName]
       );
       return result.rows[0];
     } catch (err) {
@@ -82,9 +89,23 @@ const Genre = {
 
   delete: async (id) => {
     try {
+      await pool.query('BEGIN');
+      
+      const checkResult = await pool.query('SELECT * FROM genres WHERE id = $1', [id]);
+      
+      if (checkResult.rows.length === 0) {
+        await pool.query('COMMIT');
+        return false;
+      }
+      
+      await pool.query('DELETE FROM game_genres WHERE genre_id = $1', [id]);
+      
       await pool.query('DELETE FROM genres WHERE id = $1', [id]);
+      
+      await pool.query('COMMIT');
       return true;
     } catch (err) {
+      await pool.query('ROLLBACK');
       console.error(`Error in Genre.delete: ${err.message}`);
       throw new Error(`Error: ${err.message}`);
     }

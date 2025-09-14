@@ -11,6 +11,7 @@ const genreController = require('./controllers/genreController');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(methodOverride('_method'));
 
 pool.connect()
@@ -30,6 +31,7 @@ app.get('/games/:id', gameController.game_detail);
 app.post('/games', gameController.game_create_post);
 app.get('/games/:id/edit', gameController.game_update_get);
 app.put('/games/:id', gameController.game_update_post);
+app.delete('/games/:id', gameController.game_delete);
 
 app.get('/developers', developerController.developer_list);
 app.get('/developers/new', developerController.developer_create_get);
@@ -37,6 +39,7 @@ app.get('/developers/:id', developerController.developer_detail);
 app.post('/developers', developerController.developer_create_post);
 app.get('/developers/:id/edit', developerController.developer_update_get);
 app.put('/developers/:id', developerController.developer_update_post);
+app.delete('/developers/:id', developerController.developer_delete);
 
 app.get('/genres', genreController.genre_list);
 app.get('/genres/new', genreController.genre_create_get);
@@ -44,6 +47,7 @@ app.get('/genres/:id', genreController.genre_detail);
 app.post('/genres', genreController.genre_create_post);
 app.get('/genres/:id/edit', genreController.genre_update_get);
 app.put('/genres/:id', genreController.genre_update_post);
+app.delete('/genres/:id', genreController.genre_delete);
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
