@@ -66,3 +66,46 @@ exports.genre_detail = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
+exports.genre_update_get = async (req, res) => {
+  try {
+    const genre = await Genre.getById(req.params.id);
+    if (!genre) {
+      return res.status(404).send('Genre not found');
+    }
+    
+    res.render('genres/edit', {
+      title: `Edit ${genre.name}`,
+      genre
+    });
+  } catch (err) {
+    console.error('Error loading edit form:', err);
+    res.status(500).send('Server Error');
+  }
+};
+
+exports.genre_update_post = async (req, res) => {
+  try {
+    const { name, ADMIN_KEY } = req.body;
+    const genreId = req.params.id;
+    
+    if (ADMIN_KEY !== process.env.ADMIN_KEY) {
+      return res.status(403).send('Invalid admin key');
+    }
+    
+    if (!name) {
+      return res.status(400).send('Name is required');
+    }
+    
+    const updatedGenre = await Genre.update(genreId, name);
+    
+    if (!updatedGenre) {
+      return res.status(404).send('Genre not found');
+    }
+    
+    res.redirect(`/genres/${genreId}`);
+  } catch (err) {
+    console.error('Error updating genre:', err);
+    res.status(500).send(`Server Error: ${err.message}`);
+  }
+};

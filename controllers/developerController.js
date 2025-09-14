@@ -66,3 +66,46 @@ exports.developer_detail = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
+exports.developer_update_get = async (req, res) => {
+  try {
+    const developer = await Developer.getById(req.params.id);
+    if (!developer) {
+      return res.status(404).send('Developer not found');
+    }
+    
+    res.render('developers/edit', {
+      title: `Edit ${developer.name}`,
+      developer
+    });
+  } catch (err) {
+    console.error('Error loading edit form:', err);
+    res.status(500).send('Server Error');
+  }
+};
+
+exports.developer_update_post = async (req, res) => {
+  try {
+    const { name, image_url, ADMIN_KEY } = req.body;
+    const developerId = req.params.id;
+    
+    if (ADMIN_KEY !== process.env.ADMIN_KEY) {
+      return res.status(403).send('Invalid admin key');
+    }
+    
+    if (!name) {
+      return res.status(400).send('Name is required');
+    }
+    
+    const updatedDeveloper = await Developer.update(developerId, { name, image_url: image_url || null });
+    
+    if (!updatedDeveloper) {
+      return res.status(404).send('Developer not found');
+    }
+    
+    res.redirect(`/developers/${developerId}`);
+  } catch (err) {
+    console.error('Error updating developer:', err);
+    res.status(500).send(`Server Error: ${err.message}`);
+  }
+};

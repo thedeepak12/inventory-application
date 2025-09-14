@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/output.css">
+  <title>Edit <%= genre.name %></title>
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-4">
+  <div class="max-w-md mx-auto mt-10 mb-10 p-6 bg-gray-800 rounded-lg">
+    <h1 class="text-2xl font-bold mb-6">Edit Genre</h1>
+
+    <form action="/genres/<%= genre.id %>?_method=PUT" method="POST" class="space-y-4">
+      <div>
+        <label for="name" class="block mb-1">Genre Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value="<%= genre.name %>"
+          required
+          class="w-full p-2 bg-gray-700 border border-gray-600 rounded"
+        />
+      </div>
+
+      <div>
+        <label for="ADMIN_KEY" class="block mb-1">Admin Key</label>
+        <input
+          type="password"
+          id="ADMIN_KEY"
+          name="ADMIN_KEY"
+          required
+          class="w-full p-2 bg-gray-700 border border-gray-600 rounded"
+        />
+      </div>
+
+      <div class="flex justify-end space-x-4 pt-4">
+        <a href="/genres/<%= genre.id %>" class="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500 cursor-pointer">
+          Cancel
+        </a>
+        <button type="submit" class="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 cursor-pointer">
+          Update Genre
+        </button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

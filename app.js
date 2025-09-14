@@ -35,11 +35,15 @@ app.get('/developers', developerController.developer_list);
 app.get('/developers/new', developerController.developer_create_get);
 app.get('/developers/:id', developerController.developer_detail);
 app.post('/developers', developerController.developer_create_post);
+app.get('/developers/:id/edit', developerController.developer_update_get);
+app.put('/developers/:id', developerController.developer_update_post);
 
 app.get('/genres', genreController.genre_list);
 app.get('/genres/new', genreController.genre_create_get);
 app.get('/genres/:id', genreController.genre_detail);
 app.post('/genres', genreController.genre_create_post);
+app.get('/genres/:id/edit', genreController.genre_update_get);
+app.put('/genres/:id', genreController.genre_update_post);
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
