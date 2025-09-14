@@ -34,8 +34,18 @@ exports.game_create_post = async (req, res) => {
       return res.status(400).send('Title is required');
     }
     
-    const genreIdsArray = genre_ids ? genre_ids.split(',').map(id => id.trim()).filter(id => id) : [];
-    const developerIdsArray = developer_ids ? developer_ids.split(',').map(id => id.trim()).filter(id => id) : [];
+    // Convert to array if it's not already one (handles both string and array inputs)
+    const genreIdsArray = genre_ids 
+      ? Array.isArray(genre_ids) 
+        ? genre_ids.filter(id => id) 
+        : [genre_ids].filter(id => id)
+      : [];
+      
+    const developerIdsArray = developer_ids 
+      ? Array.isArray(developer_ids) 
+        ? developer_ids.filter(id => id) 
+        : [developer_ids].filter(id => id)
+      : [];
     
     console.log('Parsed IDs:', { genreIdsArray, developerIdsArray });
     
