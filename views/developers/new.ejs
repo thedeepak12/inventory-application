@@ -10,6 +10,12 @@
   <div class="max-w-md mx-auto mt-10 mb-10 p-6 bg-gray-800 rounded-lg">
     <h1 class="text-2xl font-bold mb-6">Add New Developer</h1>
 
+    <% if (typeof error !== 'undefined') { %>
+      <div class="mb-4 p-4 bg-red-900 text-red-100 rounded">
+        <%= error %>
+      </div>
+    <% } %>
+
     <form action="/developers" method="POST" class="space-y-4">
       <div>
         <label for="name" class="block mb-1">Developer Name</label>
@@ -17,22 +23,29 @@
           type="text"
           id="name"
           name="name"
-        required
-        class="w-full p-2 bg-gray-700 border border-gray-600 rounded"
-      />
+          value="<%= typeof name !== 'undefined' ? name : '' %>"
+          required
+          class="w-full p-2 bg-gray-700 border border-gray-600 rounded text-white"
+        />
     </div>
 
     <div>
       <label for="image_url" class="block mb-1">Image URL</label>
-      <input type="url" id="image_url" name="image_url" class="w-full p-2 bg-gray-700 border border-gray-600 rounded" />
+      <input 
+        type="url" 
+        id="image_url" 
+        name="image_url" 
+        value="<%= typeof image_url !== 'undefined' ? image_url : '' %>"
+        class="w-full p-2 bg-gray-700 border border-gray-600 rounded text-white" 
+      />
     </div>
 
     <div>
-      <label for="secret_key" class="block mb-1">Admin Key</label>
+      <label for="ADMIN_KEY" class="block mb-1">Admin Key</label>
       <input
         type="password"
-        id="secret_key"
-        name="secret_key"
+        id="ADMIN_KEY"
+        name="ADMIN_KEY"
         required
         class="w-full p-2 bg-gray-700 border border-gray-600 rounded"
       />
